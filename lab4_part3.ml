@@ -60,16 +60,16 @@ module IntListStack =
     type stack = int list
 
     (* Returns an empty stack *)
-    let empty () : stack = failwith "not implemented"
+    let empty () : stack = []
 
     (* Add an element to the top of the stack *)
-    let push (i : int) (s : stack) : stack = failwith "not implemented"
+    let push (i : int) (s : stack) : stack = i :: s
 
     (* Return the value of the topmost element on the stack *)
-    let top (s : stack) : int = failwith "not implemented"
+    let top (s : stack) : int = List.hd s
 
     (* Return a modified stack with the topmost element removed *)
-    let pop (s : stack) : stack = failwith "not implemented"
+    let pop (s : stack) : stack = List.tl s
   end ;;
 
 (* Now let's use this implementation and consider some implications.
@@ -81,14 +81,14 @@ the values "5" and then "1" pushed in that order.
 ......................................................................*)
 
 let small_stack () : IntListStack.stack =
-  failwith "not implemented" ;;
+  let open IntListStack in push 1 (push 5 (empty ())) ;;
 
 (*......................................................................
 Exercise 3C: Now, use IntListStack methods to write an expression that
 defines last_el as the value of the topmost element from small_stack.
 ......................................................................*)
 
-let last_el = 0;;
+let last_el = IntListStack.top (small_stack ()) ;;
 
 (* Based on our requirements above, what should last_el contain?
 
@@ -107,8 +107,10 @@ with the elements inverted, without using any of the IntListStack
 methods.
 ......................................................................*)
 
-let invert_stack (s : IntListStack.stack) : IntListStack.stack =
-  failwith "not implemented" ;;
+let rec invert_stack (s : IntListStack.stack) : IntListStack.stack =
+  match s with
+  | [] -> []
+  | hd :: tl -> invert_stack tl @ [hd] ;;
 
 (* Now what would be the result of the top operation on invert_stack?
 
@@ -118,17 +120,20 @@ top value from a small_stack inverted with invert_stack and store it
 in bad_el.
 ......................................................................*)
 
-let bad_el = 0 ;;
+let bad_el = IntListStack.top (invert_stack (small_stack ())) ;;
 
-(* This is bad. We have broken through the *abstraction barrier*
-defined by the IntListStack module. You may wonder: "if I know that
-the module is defined by a list, why not have the power to update it
-manually?"
+(* Should not know that this is designed with a list! You don't want ANY
+list function to work with this - only want YOUR stack functions to work.
+
+
+This is bad. We have broken through the *abstraction barrier* defined by
+the IntListStack module. You may wonder: "if I know that the module is
+defined by a list, why not have the power to update it manually?"
 
 Several reasons:
 
 First, as we've just done, it was entirely possible for us as a user
-of the module to completely change the internal representation. 
+of the module to completely change the internal representation.
 Imagine what would happen for a more complex module that allowed us to
 break an invariant! From Problem Set 3, what would break if a person
 could change a zero bignum to also set the negative flag? Or pass a
@@ -156,6 +161,11 @@ that's the type you used in your implementation.
 
 module type INT_STACK =
   sig
+    type stack
+    val empty : unit -> stack
+    val push : int -> stack -> stack
+    val top : stack -> int
+    val pop : stack -> stack
   end ;;
 
 (* Now, we'll apply the INT_STACK interface to the IntListStack. *)
