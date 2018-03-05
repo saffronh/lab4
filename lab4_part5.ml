@@ -108,29 +108,37 @@ module MakeStack (Element: SERIALIZE) : (STACK with type element = Element.t) =
 
     let empty () : stack = []
 
-    let push (el: element) (s: stack) : stack =
-      failwith "not implemented"
+    let push (el: element) (s: stack) : stack = el :: s
 
     let pop_helper (s: stack) : (element * stack) =
-      failwith "not implemented"
+      match s with
+      | [] -> raise Empty
+      | hd :: tl -> (hd, tl)
 
     let top (s: stack) : element =
-      failwith "not implemented"
+      fst (pop_helper s)
 
     let pop (s: stack) : stack =
-      failwith "not implemented"
+      snd (pop_helper s)
 
-    let map (f: element -> element) (s: stack) : stack =
-      failwith "not implemented"
+    let rec map (f: element -> element) (s: stack) : stack =
+      match s with
+      | [] -> []
+      | hd :: tl -> (f hd) :: (map f tl)
 
-    let filter (f: element -> bool) (s: stack) : stack =
-      failwith "not implemented"
+    let rec filter (f: element -> bool) (s: stack) : stack =
+      match s with
+      | [] -> []
+      | hd :: tl -> if f hd then hd :: (filter f tl) else filter f tl
 
-    let fold_left (f: 'a -> element -> 'a) (init: 'a) (s: stack) : 'a =
-      failwith "not implemented"
+    let rec fold_left (f: 'a -> element -> 'a) (init: 'a) (s: stack) : 'a =
+      match s with
+      | [] -> init
+      | hd :: tl -> fold_left f (f init hd) tl
 
     let serialize (s: stack) : string =
-      failwith "not implemented"
+      let f x y = Element.serialize y ^ (if x <> "" then ":" ^ x else "") in
+      fold_left f "" s
   end ;;
 
 (*......................................................................

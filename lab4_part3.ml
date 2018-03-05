@@ -168,7 +168,9 @@ module type INT_STACK =
     val pop : stack -> stack
   end ;;
 
-(* Now, we'll apply the INT_STACK interface to the IntListStack. *)
+(* Now, we'll apply the INT_STACK interface to the IntListStack.
+
+Applying an interface to an existing module: *)
 
 module SafeIntListStack = (IntListStack : INT_STACK) ;;
 
@@ -182,4 +184,5 @@ perform list operations directly on it, which means the stack
 preserves its abstraction barrier.
 ......................................................................*)
 
-let safe_stack () = failwith "not implemented" ;;
+let safe_stack () =
+  let open SafeIntListStack in push 1 (push 5 (empty ())) ;;

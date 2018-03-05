@@ -110,11 +110,14 @@ functions that have the same name and type.
 ......................................................................*)
 
 (* Uncomment when ready! *)
-(*
+
 module type Sequence =
   sig
+    type length
+    type info
+    val exists : int -> bool
   end;;
-*)
+
 
 (*......................................................................
 Exercise 2D: Now, create new modules, named SequenceFibonacci,
@@ -127,6 +130,7 @@ code. You'll just want to replace the trivial module definition
 "struct end" in the code below.
 ......................................................................*)
 
-module SequenceFibonacci = struct end ;;
-module SequenceInverse = struct end ;;
-module SequenceStudyplan = struct end ;;
+#mod_use "inverse.ml" ;;
+module SequenceFibonacci = (Fibonacci: Sequence) ;;
+module SequenceInverse : Sequence = Inverse ;;
+module SequenceStudyplan : Sequence = Studyplan ;;

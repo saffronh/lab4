@@ -25,11 +25,11 @@ let info = {
 } ;;
 
 (* exists -- Predicate holds if n is an appropriate fibonacci index *)
-let exists n = 
+let exists n =
   n > 0 ;;
-	
+
 (* eval -- Return the n-th fibonacci number *)
-let eval n = 
+let eval n =
   let rec ev n =
     if (n = 1 || n = 2)
     then 1
